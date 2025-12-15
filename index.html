@@ -60,6 +60,7 @@
     }
 
     .nav {
+      position: relative;
       max-width: 1180px;
       margin: 0 auto;
       padding: 14px 20px;
@@ -147,6 +148,16 @@
       color: var(--text);
       border-radius: 10px;
       padding: 8px 10px;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .menu-toggle:hover,
+    .menu-toggle:active,
+    .menu-toggle:focus-visible {
+      background: var(--panel-strong);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(40, 180, 115, 0.25);
+      outline: none;
     }
 
     main {
@@ -359,8 +370,8 @@
     @media (max-width: 820px) {
       nav ul {
         position: absolute;
-        top: 68px;
-        right: 20px;
+        top: 64px;
+        right: 12px;
         background: rgba(7, 12, 26, 0.95);
         border: 1px solid var(--border);
         border-radius: 14px;
@@ -377,6 +388,11 @@
 
       .menu-toggle {
         display: inline-flex;
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 11;
       }
 
       .nav {
@@ -625,16 +641,28 @@
 
     const setExpanded = (expanded) => toggle?.setAttribute('aria-expanded', String(expanded));
 
-    toggle?.addEventListener('click', () => {
+    const closeMenu = () => {
+      menu?.classList.remove('open');
+      setExpanded(false);
+    };
+
+    toggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = menu.classList.toggle('open');
       setExpanded(isOpen);
     });
 
     menu?.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-        setExpanded(false);
-      });
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menu?.classList.contains('open')) return;
+      const withinMenu = menu.contains(e.target);
+      const withinToggle = toggle?.contains(e.target);
+      if (!withinMenu && !withinToggle) {
+        closeMenu();
+      }
     });
   </script>
 </body>
