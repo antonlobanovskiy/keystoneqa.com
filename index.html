@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keystone QA | Mobile Automation Consultancy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #404041;
+      --panel: rgba(255, 255, 255, 0.03);
+      --panel-strong: rgba(255, 255, 255, 0.06);
+      --text: #ffffff;
+      --muted: #ccd0d6;
+      --accent: #28b473;
+      --accent-2: #2fd18b;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(40, 180, 115, 0.18), transparent 24%),
+                  radial-gradient(circle at 78% 10%, rgba(40, 180, 115, 0.14), transparent 26%),
+                  linear-gradient(140deg, #404041, #1d1d1e 60%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(12, 12, 13, 0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .brand img {
+      height: 56px;
+      width: auto;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-weight: 500;
+      padding: 10px 12px;
+      border-radius: 10px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .cta-btn, .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border 0.2s ease;
+      cursor: pointer;
+    }
+
+    .cta-btn {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #04101d;
+      box-shadow: 0 12px 44px rgba(40, 180, 115, 0.36);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 46px rgba(110, 197, 255, 0.35);
+    }
+
+    .ghost-btn {
+      background: var(--panel);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .ghost-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .menu-toggle {
+      display: none;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 20px 100px;
+    }
+
+    section {
+      margin: 64px 0;
+      scroll-margin-top: 96px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.08;
+      margin: 0 0 18px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .hero-card {
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-card strong {
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .card h3 {
+      margin: 8px 0 12px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 13px;
+      border-radius: 14px;
+      background: rgba(40, 180, 115, 0.18);
+      color: var(--accent);
+      font-weight: 700;
+      border: 1px solid var(--border);
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    ul.clean {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    ul.clean li {
+      color: var(--muted);
+      display: flex;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    ul.clean li::before {
+      content: '•';
+      color: var(--accent);
+      margin-top: 1px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
+
+    .inline {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .cta-wrap {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .highlight {
+      color: var(--accent);
+    }
+
+    .footnote {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 22px 20px 32px;
+      color: var(--muted);
+      background: rgba(7, 12, 26, 0.95);
+    }
+
+    .bg-fade {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 10% 80%, rgba(40, 180, 115, 0.12), transparent 38%),
+                  radial-gradient(circle at 92% 40%, rgba(40, 180, 115, 0.12), transparent 40%);
+      z-index: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+
+    .section-title span {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .bubble {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(40, 180, 115, 0.22), transparent 32%),
+                  radial-gradient(circle at 80% 20%, rgba(40, 180, 115, 0.16), transparent 30%);
+      opacity: 0.15;
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    @media (max-width: 820px) {
+      nav ul {
+        position: absolute;
+        top: 68px;
+        right: 20px;
+        background: rgba(7, 12, 26, 0.95);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 200px;
+        display: none;
+      }
+
+      nav ul.open {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .nav {
+        padding: 12px 16px;
+      }
+
+      header {
+        position: sticky;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-fade"></div>
+  <header>
+    <div class="nav">
+      <a href="#top" class="brand">
+        <img src="assets/logo-main.png" alt="Keystone QA logo">
+      </a>
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false">&#9776;</button>
+      <nav>
+        <ul id="primary-nav">
+          <li><a href="#framework">Framework</a></li>
+          <li><a href="#packages">Packages</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a class="cta-btn" href="mailto:anton.lobanovskiy@keystoneqa.com?subject=Book%20a%20call%20with%20Keystone%20QA">Book a call</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <div class="pill">Appium POM + Productized QA</div>
+        <h1>Mobile automation that lands fast and earns trust with every release.</h1>
+        <p>Keystone QA ships a proven open-source Appium Page Object Model framework, tuned for your app, with screenshots and failure recordings that keep product and engineering aligned. You get a working smoke suite quickly, then we grow it with you.</p>
+        <div class="cta-wrap">
+          <a class="cta-btn" href="mailto:anton.lobanovskiy@keystoneqa.com?subject=Send%20me%20the%20framework">Get the framework</a>
+          <a class="ghost-btn" href="#packages">See packages</a>
+        </div>
+        <div class="footnote">Turnaround: first automated smoke tests in as little as 2 weeks.</div>
+      </div>
+      <div class="hero-card">
+        <div class="bubble"></div>
+        <span>Starter framework</span>
+        <strong>Ready-to-deploy Appium Page Object Model framework</strong>
+        <ul class="clean">
+          <li>Page Object Model with config for Android/iOS</li>
+          <li>HTML run reports with screenshots + failure recordings (mobile)</li>
+          <li>Runs locally on emulators; Docker-ready for repeatable runs</li>
+          <li>Starter repo ships in Python for speed; can mirror your stack (Java/Kotlin, JS/TS, Ruby)</li>
+          <li>Optional: CI/CD wiring when you're ready</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="framework">
+      <div class="section-title">
+        <span>Framework highlights</span>
+        <div class="badge">Open Source | Appium POM | Docker-ready</div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Engineer-grade structure</h3>
+          <p>Clear Page Object Model, fixtures, and env switching so your team can extend safely.</p>
+          <ul class="clean">
+            <li>Config-driven platform toggle (Android/iOS)</li>
+            <li>Test data patterns + secrets isolation</li>
+            <li>Designed to scale into CI when you're ready</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Visibility by default</h3>
+          <p>Every failure ships with a screenshot, a short recording, and a readable run report. No guessing why a test broke.</p>
+          <ul class="clean">
+            <li>Reporting tailored to your stack (HTML dashboards, run artifacts, step-level logs)</li>
+            <li>Step-level logs mapped to business actions</li>
+            <li>Artifacts packaged per run (screenshots, recordings, logs)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Container friendly</h3>
+          <p>Docker option keeps onboarding painless and mirrors production-like runners.</p>
+          <ul class="clean">
+            <li>One command to spin up dependencies</li>
+            <li>Ideal for startup laptop fleets</li>
+            <li>Optional real-device lab integration when real devices are needed</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="packages">
+      <div class="section-title">
+        <span>Productized services</span>
+        <div class="badge">Fixed deliverables, scoped to your app</div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="badge">Package A</div>
+          <h3>The Foundation</h3>
+          <p>For teams starting from zero automation. Ship a working smoke suite and documentation.</p>
+          <ul class="clean">
+            <li>Fork and tailor the open-source framework to your app</li>
+            <li>Android & iOS config, emulators first</li>
+            <li>Critical path smoke tests (login, signup, purchase)</li>
+            <li>Video walkthrough + how-to-run docs</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="inline">
+            <strong>Scoped per app</strong>
+            <span class="muted">Let's map the flows together</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="badge">Package B</div>
+          <h3>QA-as-a-Service</h3>
+          <p>Keep shipping features while tests keep up. Designed for teams without a full-time SDET.</p>
+          <ul class="clean">
+            <li>5-10 new scenarios automated per month</li>
+            <li>Stability work (fix flaky tests) + dependency updates</li>
+            <li>Weekly execution + triage reports</li>
+            <li>Optional: real-device runs via your device lab subscription or BYOD (bring-your-own-device) access</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="inline">
+            <strong>Subscription</strong>
+            <span class="muted">calibrated to release cadence</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="badge">Package C</div>
+          <h3>CTO's Safety Net</h3>
+          <p>Rescue a stalled automation effort. Refactor into a clean, maintainable Page Object Model.</p>
+          <ul class="clean">
+            <li>Code audit + migration plan</li>
+            <li>Refactor into maintainable Page Objects</li>
+            <li>Hands-on training for manual testers</li>
+            <li>Hand-off playbook and coaching</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="inline">
+            <strong>Fixed-fee</strong>
+            <span class="muted">scoped per codebase</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section id="experience">
+      <div class="section-title">
+        <span>Experience</span>
+        <div class="badge">10+ yrs | Mobile · Web · API | Security + scale</div>
+      </div>
+      <div class="card" style="display: grid; gap: 10px;">
+        <h3>Led by Anton Lobanovskiy — Senior QA/SDET focused on shipping secure, reliable mobile products at scale.</h3>
+        <p style="margin: 0; color: var(--muted);">
+          Led automation for Lookout's mobile security (3,000+ enterprises, 220M+ endpoints) and Microsoft Translator (10M+ downloads, 4.6-star rating), plus carrier launches with T-Mobile/AT&T/Sprint. I combine risk-based strategy with production-grade frameworks so teams ship faster without regressions.
+        </p>
+        <p style="margin: 0; color: var(--muted);">
+          Appium is the backbone, but I deliver in your stack: Java/Kotlin, Python, JS/TS, Ruby. Heavy user of Copilot (IDE/CLI), MCPs, and AI-assisted workflows to accelerate reliable automation.
+        </p>
+        <div class="divider"></div>
+        <h4 style="margin: 0; color: var(--text);">Core toolkit</h4>
+        <ul class="clean">
+          <li>Automation: Appium with platform-specific hooks when needed (Espresso/XCUITest), plus ADB/Android Studio.</li>
+          <li>Coverage: mobile, web, and API testing with risk-based strategy + exploratory depth.</li>
+          <li>Delivery: Java/Kotlin, Python, JS/TS, Ruby; CI/CD (GitHub Actions/CircleCI/Jenkins); Dockerized runners; dashboards + artifacts (screenshots + recordings).</li>
+          <li>AI acceleration: Copilot IDE/CLI, MCP-based tooling, and fast iteration loops without sacrificing reliability.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="section-title">
+        <span>How engagement works</span>
+        <div class="badge">Execution-focused, remote-friendly</div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>01 — Discovery</h3>
+          <p>30-minute call to map target devices, core flows, and team rituals.</p>
+          <ul class="clean">
+            <li>Slack/Teams shared channel to keep context</li>
+            <li>Jira/Trello-friendly updates</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>02 — Build</h3>
+          <p>Adapt the framework, wire configs, and deliver the first smoke suite quickly.</p>
+          <ul class="clean">
+            <li>Dockerized local runs, emulator-first</li>
+            <li>Optional: CI/CD wiring + artifacts in your pipeline</li>
+            <li>Real-device runs use your device lab subscription or BYOD (bring-your-own-device) access</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>03 — Scale</h3>
+          <p>Ongoing automation, weekly reporting, and stability work so the suite stays trustworthy.</p>
+          <ul class="clean">
+            <li>Real-device runs when needed (device lab or BYOD)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-title">
+        <span>Let's talk</span>
+        <div class="badge">Show me the app, I'll show you the smoke tests</div>
+      </div>
+      <div class="card" style="display: grid; gap: 14px; align-items: center;">
+        <div class="bubble"></div>
+        <div class="inline" style="justify-content: space-between; flex-wrap: wrap;">
+          <div>
+            <h3 style="margin: 0 0 6px;">Ready for a demo of the framework?</h3>
+            <p style="margin: 0; color: var(--muted);">Share your app build (APK/IPA) or core flows. I'll run through the ready-to-deploy POM and propose the right package.</p>
+          </div>
+          <img src="assets/logo-main.png" alt="Keystone QA wordmark" style="height: 44px; width: auto;">
+        </div>
+        <div class="cta-wrap">
+          <a class="cta-btn" href="mailto:anton.lobanovskiy@keystoneqa.com?subject=Book%20a%20call%20with%20Keystone%20QA">Book a call</a>
+          <a class="ghost-btn" href="mailto:anton.lobanovskiy@keystoneqa.com?subject=Send%20me%20the%20framework">Send me the framework</a>
+        </div>
+        <div class="footnote">Need a custom scope? Ask about CI/CD enablement and real-device coverage. Prefer a quick call or text? <a href="tel:+12066818238">206 681 8238</a>.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="inline" style="justify-content: space-between; flex-wrap: wrap;">
+      <span>Keystone QA — Appium automation without the hiring overhead.</span>
+      <span class="inline" style="gap: 12px;">
+        <a href="mailto:anton.lobanovskiy@keystoneqa.com" style="color: var(--text);">anton.lobanovskiy@keystoneqa.com</a>
+        <a href="tel:+12066818238" style="color: var(--text);">206 681 8238</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.querySelector('.menu-toggle');
+    const menu = document.querySelector('nav ul');
+
+    const setExpanded = (expanded) => toggle?.setAttribute('aria-expanded', String(expanded));
+
+    toggle?.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      setExpanded(isOpen);
+    });
+
+    menu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+        setExpanded(false);
+      });
+    });
+  </script>
+</body>
+</html>
